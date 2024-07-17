@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as matImage
 
 # os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import os
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
@@ -66,7 +66,7 @@ def water_test():
     else:
         assert False
     device_ids = [0]
-    model = nn.DataParallel(net, device_ids=device_ids).cuda()
+    model = nn.DataParallel(net, device_ids=device_ids, output_device=device_ids).cuda()
     # load model
     model.load_state_dict(torch.load(os.path.join(opt.modeldir, model_name)))
     model.eval()
@@ -131,10 +131,10 @@ def water_test():
                 g = g[None, :, :]
                 pic = np.concatenate((b, g, r), axis=0)
                 pic = np.transpose(pic, (1, 2, 0))
-                plt.subplot(121)
-                plt.imshow(pic)
+                # plt.subplot(121)
+                # plt.imshow(pic)
                 matImage.imsave(data_path + "/output/pic_out" + str(f_index) + ".jpg", pic)
-                plt.subplot(122)
+                # plt.subplot(122)
                 pic = INoisy_np[0]
                 r, g, b = pic[0], pic[1], pic[2]
                 b = b[None, :, :]
@@ -143,10 +143,10 @@ def water_test():
                 print(r.shape)
                 pic = np.concatenate((b, g, r), axis=0)
                 pic = np.transpose(pic, (1, 2, 0))
-                plt.imshow(pic)
+                # plt.imshow(pic)
                 matImage.imsave(data_path + "/output/pic_input" + str(f_index) + ".jpg", pic)
                 f_index += 1
-                plt.show()
+                # plt.show()
             psnr_source = batch_PSNR(INoisy, ISource, 1.0)
             ssim_source = batch_SSIM(INoisy, ISource, 1.0)
             mse_source = batch_RMSE(INoisy, ISource, 1.0)

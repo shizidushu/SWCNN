@@ -227,8 +227,11 @@ def add_watermark_noise_test(img_train, occupancy=50, img_id=3, scale_img=1.5, s
     # Noise2Noise要确保类标和输入的水印为同一张
     if self_surpervision:
         random_img = same_random
-    data_path = "watermark/translucence/"
-    watermark = Image.open(data_path + str(random_img) + ".png")
+    # data_path = "watermark/translucence/"
+    # watermark = Image.open(data_path + str(random_img) + ".png")
+    import os
+    watermark_path = "watermark/" + os.listdir("watermark")[random_img-1]
+    watermark = Image.open(watermark_path)
     watermark = watermark.convert("RGBA")
     w, h = watermark.size
     # 设置水印透明度
@@ -291,7 +294,7 @@ def add_watermark_noise_test(img_train, occupancy=50, img_id=3, scale_img=1.5, s
             sum = (img_cnt > 0).sum()
             ratio = img_w * img_h * occupancy / 100
             if sum > ratio:
-                img_rgb = np.array(tmp).astype(np.float) / 255.
+                img_rgb = np.array(tmp).astype(np.float32) / 255.
                 img_train[i] = img_rgb[:, :, [0, 1, 2]]
                 break
     img_train = np.transpose(img_train, (0, 3, 1, 2))
